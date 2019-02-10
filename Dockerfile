@@ -27,11 +27,10 @@ RUN yum install -y php php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php
 # Start Apache HTTPD Service
 EXPOSE 80
 ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
-#CMD ["sh", "-c", "/usr/sbin/httpd", "-D", "FOREGROUND"]
 
 # Place VOLUME statement below changes to /var/lib/mysql
 VOLUME /var/lib/mysql
 
 # Start MariaDB Service
 EXPOSE 3306
-#CMD ["/usr/bin/mysqld_safe"]
+ENTRYPOINT ["/usr/bin/mysqld_safe"]
