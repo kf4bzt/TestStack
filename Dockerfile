@@ -1,5 +1,5 @@
 # Download base image centos 7
-FROM centos
+FROM centos:7
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mysql && useradd -r -g mysql mysql
@@ -16,21 +16,22 @@ rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 # Install necessary repos and clean up after we're done
-RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-    yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
-    yum update -y && yum clean all
+RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+RUN yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+RUN yum update -y && yum clean all
 
 # Make sure that all necessary packages are installed and ready for use
-RUN yum-config-manager --enable remi-php72   [Install PHP 7.2] \
-    yum install -y php php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo nginx httpd httpd-tools mariadb-server
+RUN yum-config-manager --enable remi-php72   [Install PHP 7.2]
+RUN yum install -y php php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo nginx httpd httpd-tools mariadb-server
 
 # Start Apache HTTPD Service
 EXPOSE 80
-CMD ["/sbin/apachectl","-D","FOREGROUND"]
+ENTRYPOINT ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+#CMD ["sh", "-c", "/usr/sbin/httpd", "-D", "FOREGROUND"]
 
 # Place VOLUME statement below changes to /var/lib/mysql
 VOLUME /var/lib/mysql
 
 # Start MariaDB Service
 EXPOSE 3306
-CMD ["mysqld_safe"]
+#CMD ["/usr/bin/mysqld_safe"]
